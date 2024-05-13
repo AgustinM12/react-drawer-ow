@@ -20,10 +20,12 @@ export const CharaInfoPage = ({ route }) => {
         <FlatList
             data={[
                 { key: 'name', value: data.name },
+                { key: 'role', value: data.role },
                 { key: 'description', value: data.description },
                 { key: 'location', value: data.location },
                 { key: 'birthday', value: data.birthday },
                 { key: 'age', value: data.age },
+                { key: 'portrait', value: data.portrait },
                 { key: 'summary', value: data?.story?.summary },
                 { key: 'abilities', value: data.abilities },
                 { key: 'chapters', value: data?.story?.chapters },
@@ -69,6 +71,17 @@ export const CharaInfoPage = ({ route }) => {
                                 />
                             </>
                         );
+                    case 'portrait':
+                        return (
+                            <>
+                                <Text style={{ textAlign: "center", textDecorationLine: "underline" }}>{item.key[0].toUpperCase() + item.key.slice(1)}:</Text>
+                                <Image
+                                    source={{ uri: item.value }}
+                                    style={{ aspectRatio: 1, resizeMode: "stretch", borderColor: "#ffa200", borderWidth: 2, borderRadius: 25, marginVertical: 15, marginLeft: 'auto', marginRight: 'auto' }}
+                                />
+
+                            </>
+                        )
                     default:
                         return (
                             <>

@@ -45,20 +45,20 @@ export function OwScreen({ navigation }) {
     }
 
     return (
-
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center", paddingTop: 15, paddingBottom: 15, backgroundColor: "#e2ebfb" }}>
+        <>
             {
                 data.length > 0 ?
                     (<FlatList
                         data={data}
                         renderItem={({ item }) => <OwCard item={item} />}
                         keyExtractor={item => item.key}
+                        style={{ paddingLeft: 30, paddingVertical: 15, backgroundColor: "#e2ebfb" }}
                         ItemSeparatorComponent={() => <View style={{ height: verticalScale(15) }} />}
                     />) :
                     (<Text>
                         No hay personajes disponibles
                     </Text>)
             }
-        </View>
+        </>
     );
 }
