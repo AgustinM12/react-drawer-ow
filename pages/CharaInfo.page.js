@@ -2,6 +2,7 @@ import { View, Image, FlatList } from "react-native";
 import { useFetchOw } from "../hooks/useFetchOw";
 import { Divider, Text, List, ActivityIndicator } from "react-native-paper";
 import { scale, verticalScale } from 'react-native-size-matters';
+import { ImagesComponent } from "../components/Images.component";
 
 export const CharaInfoPage = ({ route }) => {
     const { key } = route.params;
@@ -38,7 +39,7 @@ export const CharaInfoPage = ({ route }) => {
                                 <FlatList
                                     data={item.value}
                                     renderItem={({ item }) => (
-                                        <List.Accordion title={item.name} id={item.name}>
+                                        <List.Accordion title={item.name} id={item.name} left={() => <ImagesComponent url={item.icon} />}>
                                             <Text style={{ paddingHorizontal: 10 }}>{item.description}</Text>
                                         </List.Accordion>
                                     )}
