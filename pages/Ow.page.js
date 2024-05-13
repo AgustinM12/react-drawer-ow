@@ -52,7 +52,7 @@ export function OwScreen({ navigation }) {
                     (<FlatList
                         data={data}
                         renderItem={({ item }) => <OwCard item={item} />}
-                        keyExtractor={item => item.id}
+                        keyExtractor={item => item.key}
                         ItemSeparatorComponent={() => <View style={{ height: verticalScale(15) }} />}
                     />) :
                     (<Text>
