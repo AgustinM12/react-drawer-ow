@@ -1,13 +1,34 @@
 import { View, Image, ScrollView, FlatList } from "react-native"
 import { useFetchOw } from "../hooks/useFetchOw";
 import { Divider, Text, List, ActivityIndicator } from "react-native-paper";
-
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 
 export const CharaInfoPage = ({ route }) => {
 
     const { key } = route.params;
 
     const { data, loading } = useFetchOw(key)
+
+    const AbilitieslistAcordion = ({ item }) => (
+        <List.Accordion title={item.name} id={item.name}>
+            <Text>
+                {item.description}
+            </Text>
+        </List.Accordion>
+    )
+
+    const HistoryList = ({ item }) => (
+        <List.Accordion title={item.title} id={item.title}>
+            <Text>{item.content}</Text>
+            <View style={{ width: scale(350), height: verticalScale(350), flex: 1, justifyContent: "center", alignSelf: "center" }}>
+                <Image
+                    source={{ uri: item.picture }}
+                    style={{ flex: 1, resizeMode: 'contain' }}
+                />
+            </View>
+
+        </List.Accordion>
+    )
 
     if (loading) {
         return (
@@ -33,15 +54,11 @@ export const CharaInfoPage = ({ route }) => {
                 <Text>Habilidades</Text>
                 <Divider />
                 <List.AccordionGroup>
-                    {
-                        data?.abilities?.map((ability, key) => (
-                            <List.Accordion title={ability.name} id={key}>
-                                <Text>
-                                    {ability.description}
-                                </Text>
-                            </List.Accordion>
-                        ))
-                    }
+                    <FlatList
+                        data={data?.abilities}
+                        renderItem={({ item }) => <AbilitieslistAcordion item={item} />}
+                        keyExtractor={item => item.name}
+                    />
                 </List.AccordionGroup>
                 <Text>Historia:</Text>
                 <List.Accordion title="Resumen">
@@ -53,24 +70,15 @@ export const CharaInfoPage = ({ route }) => {
                 <Text>Capitulos de historia:</Text>
                 <Divider />
                 <List.AccordionGroup>
-                    {
-                        data?.story?.chapters?.map((chapter, key) => (
-                            <List.Accordion title={chapter.title} id={key}>
-                                <Text>{chapter.content}</Text>
-                                <View style={{ width: 350, height: 350, flex: 1, justifyContent: "center", alignSelf: "center" }}>
-                                    <Image
-                                        source={{ uri: chapter.picture }}
-                                        style={{ flex: 1, resizeMode: 'contain' }}
-                                    />
-                                </View>
-
-                            </List.Accordion>
-                        ))
-                    }
+                    <FlatList
+                        data={data?.story?.chapters}
+                        renderItem={({ item }) => <HistoryList item={item} />}
+                        keyExtractor={item => item?.title}
+                    />
                 </List.AccordionGroup>
+                <Divider />
+                <Text>Videos:{data?.story?.media?.link}</Text>
             </View>
-            <Divider />
-            <Text>Videos:{data?.story?.media?.link}</Text>
 
             {/* videoId={data?.story?.media?.link} */}
         </ScrollView>

@@ -2,6 +2,7 @@ import { View, FlatList } from 'react-native';
 import { Button, Card, Text, ActivityIndicator } from 'react-native-paper';
 import { useFetchOw } from '../hooks/useFetchOw';
 import { ImagesComponent } from '../components/Images.component';
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 
 export function OwScreen({ navigation }) {
 
@@ -12,7 +13,7 @@ export function OwScreen({ navigation }) {
     /* ef4444 */
 
     const OwCard = ({ item }) => (
-        <Card key={item.key} mode='outlined' style={{ width: 300, backgroundColor: "#72aee2" }}>
+        <Card key={item.key} mode='outlined' style={{ width: scale(300), backgroundColor: "#72aee2" }}>
             <Card.Title title={`Hero Name: ${item.name}`} subtitle={`Role: ${item.role}`}
                 left={() => <ImagesComponent name={item.key} />} titleStyle={{ fontWeight: "bold", }} />
 
@@ -21,7 +22,7 @@ export function OwScreen({ navigation }) {
             </Card.Content>
 
             <Card.Cover source={{ uri: item.portrait }}
-                style={{ height: 256, width: 256, flex: 1, justifyContent: "center", alignSelf: "center", borderWidth: 2, borderColor: "black" }} />
+                style={{ height: verticalScale(256), width: scale(256), flex: 1, justifyContent: "center", alignSelf: "center", borderWidth: 2, borderColor: "black" }} />
 
             <Card.Actions>
                 <Button
@@ -52,7 +53,7 @@ export function OwScreen({ navigation }) {
                         data={data}
                         renderItem={({ item }) => <OwCard item={item} />}
                         keyExtractor={item => item.id}
-                        ItemSeparatorComponent={() => <View style={{ height: 15 }} />}
+                        ItemSeparatorComponent={() => <View style={{ height: verticalScale(15) }} />}
                     />) :
                     (<Text>
                         No hay personajes disponibles
