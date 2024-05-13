@@ -1,10 +1,22 @@
-import { View, Image, FlatList } from "react-native";
+import { View, Image, FlatList, Alert, Button } from "react-native";
 import { useFetchOw } from "../hooks/useFetchOw";
 import { Divider, Text, List, ActivityIndicator } from "react-native-paper";
 import { scale, verticalScale } from 'react-native-size-matters';
 import { ImagesComponent } from "../components/Images.component";
+import YoutubePlayer from "react-native-youtube-iframe";
+import { useState, useCallback, useRef } from "react";
 
 export const CharaInfoPage = ({ route }) => {
+
+    const [playing, setPlaying] = useState(false);
+
+    const onStateChange = useCallback((state) => {
+        if (state === "ended") {
+            setPlaying(false);
+            Alert.alert("video has finished playing!");
+        }
+    }, []);
+
     const { key } = route.params;
     const { data, loading } = useFetchOw(key);
 
@@ -81,6 +93,18 @@ export const CharaInfoPage = ({ route }) => {
                                 />
 
                             </>
+                        )
+                    case 'mediaLink':
+                        return (
+                            <View style={{ padding: 20 }}>
+                                <Text style={{ textAlign: "center", textDecorationLine: "underline" }}>Introduction Cinematic:</Text>
+                                <YoutubePlayer
+                                    height={300}
+                                    play={playing}
+                                    videoId={item.value.slice(17)}
+                                    onChangeState={onStateChange}
+                                />
+                            </View>
                         )
                     default:
                         return (
