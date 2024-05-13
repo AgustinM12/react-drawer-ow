@@ -1,34 +1,11 @@
-import { View, Image, ScrollView, FlatList } from "react-native"
+import { View, Image, FlatList } from "react-native";
 import { useFetchOw } from "../hooks/useFetchOw";
 import { Divider, Text, List, ActivityIndicator } from "react-native-paper";
-import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
+import { scale, verticalScale } from 'react-native-size-matters';
 
 export const CharaInfoPage = ({ route }) => {
-
     const { key } = route.params;
-
-    const { data, loading } = useFetchOw(key)
-
-    const AbilitieslistAcordion = ({ item }) => (
-        <List.Accordion title={item.name} id={item.name}>
-            <Text>
-                {item.description}
-            </Text>
-        </List.Accordion>
-    )
-
-    const HistoryList = ({ item }) => (
-        <List.Accordion title={item.title} id={item.title}>
-            <Text>{item.content}</Text>
-            <View style={{ width: scale(350), height: verticalScale(350), flex: 1, justifyContent: "center", alignSelf: "center" }}>
-                <Image
-                    source={{ uri: item.picture }}
-                    style={{ flex: 1, resizeMode: 'contain' }}
-                />
-            </View>
-
-        </List.Accordion>
-    )
+    const { data, loading } = useFetchOw(key);
 
     if (loading) {
         return (
@@ -39,48 +16,67 @@ export const CharaInfoPage = ({ route }) => {
     }
 
     return (
-        <ScrollView>
-            <View>
-                <Text>Nombre: {data.name}</Text>
-                <Divider />
-                <Text>Descripcion: {data.description}</Text>
-                <Divider />
-                <Text>Ubicacion: {data.location}</Text>
-                <Divider />
-                <Text>Fecha de Nacimiento: {data.birthday}</Text>
-                <Divider />
-                <Text>Edad: {data.age}</Text>
-                <Divider />
-                <Text>Habilidades</Text>
-                <Divider />
-                <List.AccordionGroup>
-                    <FlatList
-                        data={data?.abilities}
-                        renderItem={({ item }) => <AbilitieslistAcordion item={item} />}
-                        keyExtractor={item => item.name}
-                    />
-                </List.AccordionGroup>
-                <Text>Historia:</Text>
-                <List.Accordion title="Resumen">
-                    <Text>
-                        {data?.story?.summary}
-                    </Text>
-                </List.Accordion>
-                <Divider />
-                <Text>Capitulos de historia:</Text>
-                <Divider />
-                <List.AccordionGroup>
-                    <FlatList
-                        data={data?.story?.chapters}
-                        renderItem={({ item }) => <HistoryList item={item} />}
-                        keyExtractor={item => item?.title}
-                    />
-                </List.AccordionGroup>
-                <Divider />
-                <Text>Videos:{data?.story?.media?.link}</Text>
-            </View>
-
-            {/* videoId={data?.story?.media?.link} */}
-        </ScrollView>
-    )
-}
+        <FlatList
+            data={[
+                { key: 'name', value: data.name },
+                { key: 'description', value: data.description },
+                { key: 'location', value: data.location },
+                { key: 'birthday', value: data.birthday },
+                { key: 'age', value: data.age },
+                { key: 'summary', value: data?.story?.summary },
+                { key: 'abilities', value: data.abilities },
+                { key: 'chapters', value: data?.story?.chapters },
+                { key: 'mediaLink', value: data?.story?.media?.link }
+            ]}
+            renderItem={({ item }) => {
+                switch (item.key) {
+                    case 'abilities':
+                        return (
+                            <>
+                                <Text key="abilitiesHeader" style={{ textDecorationLine: "underline", textAlign: "center" }}>Abilities:</Text>
+                                <Divider key="abilitiesDivider" />
+                                <FlatList
+                                    data={item.value}
+                                    renderItem={({ item }) => (
+                                        <List.Accordion title={item.name} id={item.name}>
+                                            <Text style={{ paddingHorizontal: 10 }}>{item.description}</Text>
+                                        </List.Accordion>
+                                    )}
+                                    keyExtractor={(item) => item.name}
+                                />
+                            </>
+                        );
+                    case 'chapters':
+                        return (
+                            <>
+                                <Text key="historyHeader" style={{ textDecorationLine: "underline", textAlign: "center" }}>Stories:</Text>
+                                <Divider key="historyDivider" />
+                                <FlatList
+                                    data={item.value}
+                                    renderItem={({ item }) => (
+                                        <List.Accordion title={item.title} id={item.title}>
+                                            <Text style={{ paddingHorizontal: 10 }}>{item.content}</Text>
+                                            <View style={{ width: scale(350), height: verticalScale(350), flex: 1, justifyContent: "center", alignSelf: "center" }}>
+                                                <Image
+                                                    source={{ uri: item.picture }}
+                                                    style={{ aspectRatio: 1, resizeMode: "stretch", borderColor: "#ffa200", borderWidth: 2, borderRadius: 25, margin: 15 }}
+                                                />
+                                            </View>
+                                        </List.Accordion>
+                                    )}
+                                    keyExtractor={(item) => item.title}
+                                />
+                            </>
+                        );
+                    default:
+                        return (
+                            <>
+                                <Text key={item.key}>{item.key[0].toUpperCase() + item.key.slice(1)}: {item.value}</Text>
+                                <Divider />
+                            </>
+                        );
+                }
+            }}
+        />
+    );
+};
